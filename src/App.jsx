@@ -476,18 +476,20 @@ function App() {
               <div className="hero-caption"><span className="caption-line" /> DESIGN, DESENVOLVIMENTO E PROPÓSITO.</div>
             </div>
 
-            <div className="hero-showcase" data-reveal aria-label="Prévia dos projetos FORMA. e BRASA.">
+            <div className="hero-showcase" data-reveal aria-label="Prévia dos projetos FORMA., BRASA. e MIMO.">
               <div className="showcase-orbit showcase-orbit-one" aria-hidden="true" />
               <div className="showcase-orbit showcase-orbit-two" aria-hidden="true" />
+              <a className="showcase-window showcase-window-tertiary" href={projects[2].url} target="_blank" rel="noopener noreferrer" aria-label="Visitar demonstração do MIMO.">
+                <span className="window-bar" aria-hidden="true"><i /><i /><i /><small>MIMO.</small></span>
+                <img src={projects[2].image} alt="Prévia do site MIMO." decoding="async" onError={(event) => { event.currentTarget.style.display = 'none' }} />
+              </a>
               <a className="showcase-window showcase-window-main" href={projects[0].url} target="_blank" rel="noopener noreferrer" aria-label="Visitar demonstração do FORMA.">
                 <span className="window-bar" aria-hidden="true"><i /><i /><i /><small>FORMA.</small></span>
                 <img src={projects[0].image} alt="Prévia do site FORMA." fetchPriority="high" decoding="async" onError={(event) => { event.currentTarget.style.display = 'none' }} />
-
               </a>
               <a className="showcase-window showcase-window-secondary" href={projects[1].url} target="_blank" rel="noopener noreferrer" aria-label="Visitar demonstração do BRASA.">
                 <span className="window-bar" aria-hidden="true"><i /><i /><i /><small>BRASA.</small></span>
                 <img src={projects[1].image} alt="Prévia do site BRASA." decoding="async" onError={(event) => { event.currentTarget.style.display = 'none' }} />
-
               </a>
               <div className="showcase-stamp"><span>03</span> projetos<br />para explorar <span aria-hidden="true">↗</span></div>
             </div>
