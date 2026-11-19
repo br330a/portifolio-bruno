@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
+import BriefingWizard from './components/BriefingWizard'
 
 // Altere somente este número caso use outro WhatsApp no futuro.
 const WHATSAPP_NUMBER = '5511995038969'
@@ -52,31 +53,50 @@ const services = [
   {
     number: '01',
     title: 'Sites institucionais',
-    description:
-      'Um espaço próprio para apresentar seu negócio, seus diferenciais e facilitar o contato com clientes.',
+    description: 'Seu negócio apresentado com clareza, personalidade e caminhos simples para o contato.',
     icon: '◇',
+    ideal: 'Para empresas que precisam de presença profissional na internet.',
+    includes: ['Páginas de apresentação', 'Serviços e diferenciais', 'Contato e localização'],
   },
   {
     number: '02',
     title: 'Landing pages',
-    description:
-      'Páginas focadas em uma mensagem clara, com navegação objetiva e uma ação principal.',
+    description: 'Uma página com mensagem direta, estrutura estratégica e uma ação principal bem definida.',
     icon: '↗',
+    ideal: 'Para divulgar uma oferta, campanha ou serviço específico.',
+    includes: ['Foco em uma oferta', 'Conteúdo objetivo', 'Chamada para ação'],
   },
   {
     number: '03',
     title: 'Reformulação de sites',
-    description:
-      'Uma nova experiência para uma presença digital que precisa evoluir em organização, visual e usabilidade.',
+    description: 'Uma nova experiência para organizar, modernizar e facilitar o uso de um site existente.',
     icon: '✳',
+    ideal: 'Para negócios com um site desatualizado ou difícil de usar.',
+    includes: ['Análise da estrutura', 'Revisão visual', 'Melhoria da experiência mobile'],
   },
 ]
 
+const differentials = [
+  { number: '01', symbol: '↗', title: 'Direto com quem desenvolve', description: 'Sem intermediários: conversamos sobre o que faz sentido e você acompanha as decisões.' },
+  { number: '02', symbol: '▣', title: 'Pensado para cada tela', description: 'A experiência é planejada para funcionar bem no celular e também no computador.' },
+  { number: '03', symbol: '✳', title: 'Personalidade sem excessos', description: 'Design feito para valorizar a marca, com navegação clara e recursos que têm propósito.' },
+]
+
 const steps = [
-  ['01', 'Entender', 'Conheço seu negócio e o que precisa funcionar melhor.'],
-  ['02', 'Planejar', 'Definimos o escopo, as prioridades e a proposta.'],
-  ['03', 'Desenvolver', 'Crio, apresento e ajusto a experiência digital.'],
-  ['04', 'Publicar', 'Testamos e colocamos o site no ar.'],
+  ['01', 'Conversar', 'Você conta sobre o negócio, o público e o objetivo do site.'],
+  ['02', 'Definir o escopo', 'Alinhamos entregáveis, investimento, prazo e revisões em uma proposta.'],
+  ['03', 'Desenvolver', 'Transformo a proposta em um site funcional, responsivo e com identidade.'],
+  ['04', 'Revisar', 'Você avalia a versão apresentada e fazemos os ajustes combinados.'],
+  ['05', 'Publicar', 'Validamos os detalhes e organizamos o site para entrar no ar.'],
+]
+
+const faq = [
+  { question: 'Quanto custa criar um site?', answer: 'Depende das páginas, funcionalidades, conteúdo e complexidade do projeto. Primeiro entendo sua necessidade e, depois, apresento uma proposta com o escopo e o investimento definidos.' },
+  { question: 'Quanto tempo leva para ficar pronto?', answer: 'O prazo varia conforme o tamanho do projeto e a disponibilidade de materiais e aprovações. Definimos uma previsão na proposta antes de começar.' },
+  { question: 'O site vai funcionar no celular?', answer: 'Sim. A experiência responsiva faz parte do meu processo de desenvolvimento. Testamos a navegação em diferentes tamanhos de tela.' },
+  { question: 'Preciso ter domínio e hospedagem?', answer: 'Não precisa ter tudo configurado antes de conversarmos. Podemos definir juntos a melhor forma de publicar. O domínio deve ficar sob sua titularidade; custos recorrentes são esclarecidos na proposta.' },
+  { question: 'Posso pedir alterações depois?', answer: 'As rodadas de revisão são combinadas no escopo inicial. Melhorias, conteúdo novo e manutenção depois da entrega podem ser orçados separadamente, quando necessário.' },
+  { question: 'Você também faz lojas e agendamentos?', answer: 'Podemos avaliar catálogos, experiências de agendamento e integrações conforme a necessidade. Os projetos do portfólio são demonstrações e não representam plataformas reais de pagamento ou reserva.' },
 ]
 
 function ThemeIcon({ theme }) {
@@ -446,7 +466,9 @@ function App() {
           <nav id="main-navigation" className={`header-nav ${menuOpen ? 'header-nav-open' : ''}`} aria-label="Navegação principal">
             <a href="#projetos" onClick={closeMenu}>Projetos</a>
             <a href="#servicos" onClick={closeMenu}>Serviços</a>
+            <a href="#diferenciais" onClick={closeMenu}>Diferenciais</a>
             <a href="#processo" onClick={closeMenu}>Processo</a>
+            <a href="#duvidas" onClick={closeMenu}>Dúvidas</a>
             <a href="#sobre" onClick={closeMenu}>Sobre</a>
             <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" onClick={closeMenu} className="mobile-contact-link">Falar no WhatsApp ↗</a>
           </nav>
@@ -454,7 +476,7 @@ function App() {
             <button type="button" className="theme-toggle" onClick={() => setTheme((current) => current === 'light' ? 'dark' : 'light')} aria-label={theme === 'light' ? 'Ativar tema escuro' : 'Ativar tema claro'} aria-pressed={theme === 'dark'} title={theme === 'light' ? 'Tema escuro' : 'Tema claro'}>
               <ThemeIcon theme={theme} />
             </button>
-            <a className="header-cta" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Vamos conversar <span aria-hidden="true">↗</span></a>
+            <a className="header-cta" href="#orcamento">Pedir orçamento <span aria-hidden="true">↗</span></a>
             <button type="button" className={`menu-toggle ${menuOpen ? 'menu-toggle-open' : ''}`} onClick={() => setMenuOpen((current) => !current)} aria-expanded={menuOpen} aria-controls="main-navigation" aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}>
               <span /><span />
             </button>
@@ -468,12 +490,12 @@ function App() {
             <div className="hero-content" data-reveal>
               <div className="eyebrow hero-eyebrow"><span className="status-dot" /> DESENVOLVEDOR WEB · JUNDIAÍ, SP</div>
               <h1>O seu negócio tem uma história. <em>Vamos mostrar isso ao mundo.</em></h1>
-              <p className="hero-description">Crio sites com identidade, clareza e atenção aos detalhes — experiências digitais pensadas para valorizar o que torna cada negócio único.</p>
+              <p className="hero-description">Desenvolvo sites personalizados para apresentar seu negócio, valorizar o que você faz e facilitar o caminho entre quem te encontra e quem entra em contato.</p>
               <div className="hero-buttons">
-                <a className="button button-primary" href="#projetos">Explorar projetos <span aria-hidden="true">↗</span></a>
-                <a className="button button-outline" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Falar sobre uma ideia <span aria-hidden="true">↗</span></a>
+                <a className="button button-primary" href="#orcamento">Pedir orçamento <span aria-hidden="true">↗</span></a>
+                <a className="button button-outline" href="#projetos">Explorar projetos <span aria-hidden="true">↗</span></a>
               </div>
-              <div className="hero-caption"><span className="caption-line" /> DESIGN, DESENVOLVIMENTO E PROPÓSITO.</div>
+              <div className="hero-caption"><span className="caption-line" /> PROJETO SOB MEDIDA · CONTATO DIRETO · FOCO NO MOBILE.</div>
             </div>
 
             <div className="hero-showcase" data-reveal aria-label="Prévia dos projetos FORMA., BRASA. e MIMO.">
@@ -508,39 +530,77 @@ function App() {
           </div>
         </section>
 
-        <section className="section services-section" id="servicos">
+        <section className="section differences-section" id="diferenciais">
           <div className="container">
             <div className="section-header" data-reveal>
-              <div><p className="eyebrow">02 / COMO POSSO AJUDAR</p><h2>Uma solução para <em>cada necessidade.</em></h2></div>
-              <p>O melhor site não é o que tem mais recursos. É o que resolve melhor o problema certo.</p>
+              <div><p className="eyebrow">02 / MEU JEITO DE TRABALHAR</p><h2>Um bom site precisa <em>fazer sentido.</em></h2></div>
+              <p>Mais do que uma página bonita, uma experiência que represente bem seu negócio e ajude o visitante a encontrar o que procura.</p>
             </div>
-            <div className="services-grid">
-              {services.map((service) => <article className="service-card" key={service.number} data-reveal>
-                <div className="service-top"><span>{service.number}</span><span className="service-symbol" aria-hidden="true">{service.icon}</span></div>
-                <h3>{service.title}</h3><p>{service.description}</p>
-              </article>)}
+            <div className="differences-grid">
+              {differentials.map((item) => (
+                <article className="difference-card" key={item.number} data-reveal>
+                  <div className="difference-card-head"><span>{item.number} / DIFERENCIAL</span><span className="difference-symbol" aria-hidden="true">{item.symbol}</span></div>
+                  <h3>{item.title}</h3><p>{item.description}</p>
+                </article>
+              ))}
             </div>
           </div>
         </section>
 
+        <section className="section services-section" id="servicos">
+          <div className="container">
+            <div className="section-header" data-reveal>
+              <div><p className="eyebrow">03 / COMO POSSO AJUDAR</p><h2>Uma solução para <em>cada necessidade.</em></h2></div>
+              <p>Começamos pelo problema que seu negócio precisa resolver, não por uma lista de recursos desnecessários.</p>
+            </div>
+            <div className="services-grid">
+              {services.map((service) => <article className="service-card" key={service.number} data-reveal>
+                <div className="service-top"><span>{service.number} / SERVIÇO</span><span className="service-symbol" aria-hidden="true">{service.icon}</span></div>
+                <h3>{service.title}</h3>
+                <p>{service.description}</p>
+                <p className="service-ideal">{service.ideal}</p>
+                <span className="service-includes-title">O QUE PODE INCLUIR</span>
+                <ul className="service-includes">{service.includes.map((item) => <li key={item}>{item}</li>)}</ul>
+                <a className="service-link" href="#orcamento">Conversar sobre este serviço <span aria-hidden="true">↗</span></a>
+              </article>)}
+            </div>
+            <div className="delivery-note" data-reveal>
+              <div><span className="delivery-note-kicker">DO PLANEJAMENTO À PUBLICAÇÃO</span><h3>Um projeto bem definido. Sem surpresas no escopo.</h3><p>Responsividade, estrutura de conteúdo e publicação entram na conversa desde o início. Domínio, hospedagem, integrações, manutenção e revisões são alinhados na proposta conforme o projeto.</p></div>
+              <a href="#orcamento">Me conte sua ideia <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </section>
+
+        <BriefingWizard whatsappNumber={WHATSAPP_NUMBER} />
+
         <section className="section process-section" id="processo">
           <div className="container">
             <div className="section-header" data-reveal>
-              <div><p className="eyebrow">03 / DO PRIMEIRO CONTATO À ENTREGA</p><h2>Sem complicar <em>o processo.</em></h2></div>
-              <p>Clareza do início ao fim, com espaço para conversar, ajustar e construir algo que faça sentido.</p>
+              <div><p className="eyebrow">06 / DO PRIMEIRO CONTATO À ENTREGA</p><h2>Sem complicar <em>o processo.</em></h2></div>
+              <p>Você sabe o que está sendo desenvolvido, o que foi combinado e como vamos chegar à publicação.</p>
             </div>
             <div className="process-grid">{steps.map(([number, title, description]) => <div className="process-step" key={number} data-reveal><span>{number}</span><h3>{title}</h3><p>{description}</p></div>)}</div>
+            <p className="process-disclaimer">O escopo final, as revisões, os custos recorrentes e o suporte pós-publicação ficam registrados na proposta de cada projeto.</p>
+          </div>
+        </section>
+
+        <section className="section faq-section" id="duvidas">
+          <div className="container faq-grid">
+            <div className="faq-intro" data-reveal><p className="eyebrow">07 / DÚVIDAS FREQUENTES</p><h2>Antes de começar, <em>vale saber.</em></h2><p>Respostas diretas para quem está pensando em investir no próprio site.</p><a href="#orcamento" className="inline-link">Ainda tem dúvidas? Vamos conversar <span aria-hidden="true">↗</span></a></div>
+            <div className="faq-items" data-reveal>
+              {faq.map((item) => <details className="faq-item" key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>)}
+            </div>
           </div>
         </section>
 
         <section className="section about-section" id="sobre">
           <div className="container about-grid">
             <AboutVisual />
-            <div className="about-copy" data-reveal><p className="eyebrow">04 / QUEM FAZ</p><h2>Prazer, <em>sou Bruno.</em></h2><p>Sou desenvolvedor web de Jundiaí, São Paulo, e estudante de Engenharia de Software na FIAP.</p><p>Gosto de unir tecnologia, estética e usabilidade para transformar ideias em experiências digitais funcionais e bem construídas.</p><p>Trabalho com atenção aos detalhes, comunicação clara e respeito à identidade de cada negócio.</p><a className="inline-link" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Vamos conversar <span aria-hidden="true">↗</span></a></div>
+            <div className="about-copy" data-reveal><p className="eyebrow">08 / QUEM FAZ</p><h2>Prazer, <em>sou Bruno.</em></h2><p>Sou desenvolvedor web de Jundiaí, São Paulo, e estudante de Engenharia de Software na FIAP.</p><p>Gosto de unir tecnologia, estética e usabilidade para transformar ideias em experiências digitais funcionais e bem construídas.</p><p>Trabalho com atenção aos detalhes, comunicação clara e respeito à identidade de cada negócio.</p><a className="inline-link" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Vamos conversar <span aria-hidden="true">↗</span></a></div>
           </div>
         </section>
 
-        <section className="contact-section" id="contato"><div className="container contact-inner" data-reveal><div className="contact-orb" aria-hidden="true" /><p className="eyebrow">05 / SEU PRÓXIMO PROJETO</p><h2>Tem uma ideia? <em>Vamos dar forma a ela.</em></h2><p>Quer criar um site ou melhorar sua presença digital? Conte um pouco sobre o seu negócio e vamos encontrar uma solução adequada.</p><a className="contact-whatsapp" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer"><span>Conversar pelo WhatsApp</span><span aria-hidden="true">↗</span></a></div></section>
+        <section className="contact-section" id="contato"><div className="container contact-inner" data-reveal><div className="contact-orb" aria-hidden="true" /><p className="eyebrow">09 / SEU PRÓXIMO PROJETO</p><h2>Tem uma ideia? <em>Vamos dar forma a ela.</em></h2><p>Quer criar um site ou melhorar sua presença digital? Conte um pouco sobre o seu negócio e vamos encontrar uma solução adequada.</p><div className="contact-actions"><a className="contact-whatsapp" href="#orcamento"><span>Começar meu projeto</span><span aria-hidden="true">↗</span></a><a className="contact-direct" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Prefiro falar direto no WhatsApp ↗</a></div></div></section>
       </main>
 
       <a className="whatsapp-float" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" aria-label="Conversar com Bruno pelo WhatsApp" title="Conversar pelo WhatsApp">
