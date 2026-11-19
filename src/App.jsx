@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 
+// Altere somente este número caso use outro WhatsApp no futuro.
+const WHATSAPP_NUMBER = '5511995038969'
+const WHATSAPP_MESSAGE = 'Olá, Bruno! Conheci seu portfólio e gostaria de conversar sobre um site para meu negócio.'
+const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`
+
 const projects = [
   {
     id: 'forma',
@@ -248,13 +253,13 @@ function App() {
             <a href="#servicos" onClick={closeMenu}>Serviços</a>
             <a href="#processo" onClick={closeMenu}>Processo</a>
             <a href="#sobre" onClick={closeMenu}>Sobre</a>
-            <a href="#contato" onClick={closeMenu} className="mobile-contact-link">Contato ↗</a>
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" onClick={closeMenu} className="mobile-contact-link">Falar no WhatsApp ↗</a>
           </nav>
           <div className="header-actions">
             <button type="button" className="theme-toggle" onClick={() => setTheme((current) => current === 'light' ? 'dark' : 'light')} aria-label={theme === 'light' ? 'Ativar tema escuro' : 'Ativar tema claro'} aria-pressed={theme === 'dark'} title={theme === 'light' ? 'Tema escuro' : 'Tema claro'}>
               <ThemeIcon theme={theme} />
             </button>
-            <a className="header-cta" href="#contato">Vamos conversar <span aria-hidden="true">↗</span></a>
+            <a className="header-cta" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Vamos conversar <span aria-hidden="true">↗</span></a>
             <button type="button" className={`menu-toggle ${menuOpen ? 'menu-toggle-open' : ''}`} onClick={() => setMenuOpen((current) => !current)} aria-expanded={menuOpen} aria-controls="main-navigation" aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}>
               <span /><span />
             </button>
@@ -271,7 +276,7 @@ function App() {
               <p className="hero-description">Crio sites com identidade, clareza e atenção aos detalhes — experiências digitais pensadas para valorizar o que torna cada negócio único.</p>
               <div className="hero-buttons">
                 <a className="button button-primary" href="#projetos">Explorar projetos <span aria-hidden="true">↗</span></a>
-                <a className="button button-outline" href="#contato">Falar sobre uma ideia <span aria-hidden="true">↗</span></a>
+                <a className="button button-outline" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Falar sobre uma ideia <span aria-hidden="true">↗</span></a>
               </div>
               <div className="hero-caption"><span className="caption-line" /> DESIGN, DESENVOLVIMENTO E PROPÓSITO.</div>
             </div>
@@ -334,13 +339,19 @@ function App() {
         <section className="section about-section" id="sobre">
           <div className="container about-grid">
             <AboutVisual />
-            <div className="about-copy" data-reveal><p className="eyebrow">04 / QUEM FAZ</p><h2>Prazer, <em>sou Bruno.</em></h2><p>Sou desenvolvedor web de Jundiaí, São Paulo, e estudante de Engenharia de Software na FIAP.</p><p>Gosto de unir tecnologia, estética e usabilidade para transformar ideias em experiências digitais funcionais e bem construídas.</p><p>Trabalho com atenção aos detalhes, comunicação clara e respeito à identidade de cada negócio.</p><a className="inline-link" href="#contato">Vamos conversar <span aria-hidden="true">↗</span></a></div>
+            <div className="about-copy" data-reveal><p className="eyebrow">04 / QUEM FAZ</p><h2>Prazer, <em>sou Bruno.</em></h2><p>Sou desenvolvedor web de Jundiaí, São Paulo, e estudante de Engenharia de Software na FIAP.</p><p>Gosto de unir tecnologia, estética e usabilidade para transformar ideias em experiências digitais funcionais e bem construídas.</p><p>Trabalho com atenção aos detalhes, comunicação clara e respeito à identidade de cada negócio.</p><a className="inline-link" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Vamos conversar <span aria-hidden="true">↗</span></a></div>
           </div>
         </section>
 
-        <section className="contact-section" id="contato"><div className="container contact-inner" data-reveal><div className="contact-orb" aria-hidden="true" /><p className="eyebrow">05 / SEU PRÓXIMO PROJETO</p><h2>Tem uma ideia? <em>Vamos dar forma a ela.</em></h2><p>Quer criar um site ou melhorar sua presença digital? Conte um pouco sobre o seu negócio e vamos encontrar uma solução adequada.</p><span className="contact-status">WhatsApp comercial em configuração</span></div></section>
+        <section className="contact-section" id="contato"><div className="container contact-inner" data-reveal><div className="contact-orb" aria-hidden="true" /><p className="eyebrow">05 / SEU PRÓXIMO PROJETO</p><h2>Tem uma ideia? <em>Vamos dar forma a ela.</em></h2><p>Quer criar um site ou melhorar sua presença digital? Conte um pouco sobre o seu negócio e vamos encontrar uma solução adequada.</p><a className="contact-whatsapp" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer"><span>Conversar pelo WhatsApp</span><span aria-hidden="true">↗</span></a></div></section>
       </main>
 
+      <a className="whatsapp-float" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" aria-label="Conversar com Bruno pelo WhatsApp" title="Conversar pelo WhatsApp">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M20 11.4a8.3 8.3 0 0 1-8.5 8.4 9 9 0 0 1-3.4-.7L4 20l1.1-4a8.7 8.7 0 0 1-1.1-4.2 8.1 8.1 0 0 1 8.2-8.1A7.9 7.9 0 0 1 20 11.4Z" />
+          <path d="M9.1 9.2c.3 2.4 2 4.3 4.5 5.1l1.2-1.1 1.7 1" />
+        </svg>
+      </a>
       <footer className="site-footer"><div className="container footer-inner"><a className="brand" href="#inicio">Bruno Minitti<span>.</span></a><span>Desenvolvimento Web · Jundiaí, SP</span><a href="#inicio" className="back-to-top">Voltar ao topo ↑</a><span>© {new Date().getFullYear()}</span></div></footer>
     </>
   )
