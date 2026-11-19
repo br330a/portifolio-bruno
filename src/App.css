@@ -410,7 +410,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   flex-direction: column;
   width: min(1120px, 100%);
   height: min(890px, calc(100dvh - 28px));
-  min-height: 390px;
+  min-height: 0;
   border: 1px solid var(--border);
   border-radius: 18px;
   overflow: hidden;
@@ -642,4 +642,24 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outlin
   .about-visual-caption { font-size: 9px; letter-spacing: 1.1px; }
   .service-card { padding: 22px; }
   .contact-section { padding-block: 66px; }
+}
+
+/* Ajustes finais: prévia utilizável em telas baixas e em landscape. */
+@media (max-height: 520px) {
+  .preview-backdrop { padding: 4px; backdrop-filter: none; }
+  .preview-dialog { height: calc(100dvh - 8px); min-height: 0; border-radius: 9px; }
+  .preview-dialog-header { padding: 5px 12px; gap: 8px; }
+  .preview-dialog-kicker { display: none; }
+  .preview-dialog-header h3 { margin: 0; font-size: 16px; }
+  .preview-close { width: 30px; height: 30px; font-size: 22px; }
+  .preview-dialog-controls { flex-direction: row; align-items: center; padding: 4px 12px; }
+  .preview-dialog-controls p { display: none; }
+  .preview-device-selector button { padding: 6px 10px; }
+  .preview-dialog-footer { flex-direction: row; align-items: center; padding: 5px 12px; }
+  .preview-dialog-footer span { display: none; }
+  .preview-stage { padding: 3px; }
+}
+@media (max-width: 340px) {
+  .preview-dialog-header h3 span { display: none; }
+  .preview-device-selector button { padding-inline: 7px; }
 }

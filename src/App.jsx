@@ -13,7 +13,7 @@ const projects = [
     name: 'FORMA.',
     category: 'Barbearia',
     type: 'Projeto demonstrativo',
-    image: '/projects/forma-preview.png',
+    image: '/projects/forma-preview.webp',
     url: 'https://barbearia-demo.brunogoncalvesminitti.workers.dev/',
     description:
       'Uma proposta de presença digital com identidade marcante, pensada para apresentar uma barbearia com clareza e personalidade.',
@@ -26,7 +26,7 @@ const projects = [
     name: 'BRASA.',
     category: 'Hamburgueria',
     type: 'Projeto demonstrativo',
-    image: '/projects/brasa-preview.png',
+    image: '/projects/brasa-preview.webp',
     url: 'https://brasa-demo.brunogoncalvesminitti.workers.dev/',
     description:
       'Um conceito para o segmento gastronômico que une apresentação de produtos, comunicação visual e uma experiência digital envolvente.',
@@ -171,8 +171,8 @@ function LiveProjectFrame({ project, device }) {
   const baseHeight = device === 'mobile' ? 800 : 730
   const scale = Math.min(
     1,
-    Math.max(0.2, (size.width - 32) / baseWidth),
-    Math.max(0.2, (size.height - 28) / baseHeight),
+    Math.max(0.06, (size.width - 16) / baseWidth),
+    Math.max(0.06, (size.height - 16) / baseHeight),
   )
 
   return (
@@ -192,6 +192,7 @@ function LiveProjectFrame({ project, device }) {
           <iframe
             key={`${project.id}-${device}`}
             className="preview-site-frame"
+            tabIndex={-1}
             src={project.url}
             title={`Prévia ao vivo do ${project.name} na versão ${device === 'mobile' ? 'celular' : 'desktop'}`}
             loading="eager"
@@ -222,7 +223,7 @@ function ProjectPreviewDialog({ project, device, onDeviceChange, onClose }) {
       if (event.key !== 'Tab') return
 
       const focusables = dialogRef.current?.querySelectorAll(
-        'a[href], button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])',
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
       )
       if (!focusables?.length) return
 
@@ -237,8 +238,14 @@ function ProjectPreviewDialog({ project, device, onDeviceChange, onClose }) {
       }
     }
 
+    const keepFocusInside = (event) => {
+      if (!dialogRef.current?.contains(event.target)) closeButtonRef.current?.focus()
+    }
+
     document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('focusin', keepFocusInside)
     return () => {
+      document.removeEventListener('focusin', keepFocusInside)
       document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = previousOverflow
       previousFocus?.focus?.()
@@ -461,12 +468,12 @@ function App() {
               <div className="showcase-orbit showcase-orbit-two" aria-hidden="true" />
               <a className="showcase-window showcase-window-main" href={projects[0].url} target="_blank" rel="noopener noreferrer" aria-label="Visitar demonstração do FORMA.">
                 <span className="window-bar" aria-hidden="true"><i /><i /><i /><small>FORMA.</small></span>
-                <img src={projects[0].image} alt="Prévia do site FORMA." onError={(event) => { event.currentTarget.style.display = 'none' }} />
+                <img src={projects[0].image} alt="Prévia do site FORMA." fetchPriority="high" decoding="async" onError={(event) => { event.currentTarget.style.display = 'none' }} />
 
               </a>
               <a className="showcase-window showcase-window-secondary" href={projects[1].url} target="_blank" rel="noopener noreferrer" aria-label="Visitar demonstração do BRASA.">
                 <span className="window-bar" aria-hidden="true"><i /><i /><i /><small>BRASA.</small></span>
-                <img src={projects[1].image} alt="Prévia do site BRASA." onError={(event) => { event.currentTarget.style.display = 'none' }} />
+                <img src={projects[1].image} alt="Prévia do site BRASA." decoding="async" onError={(event) => { event.currentTarget.style.display = 'none' }} />
 
               </a>
               <div className="showcase-stamp"><span>02</span> projetos<br />para explorar <span aria-hidden="true">↗</span></div>
