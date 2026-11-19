@@ -33,6 +33,19 @@ const projects = [
     highlights: ['Direção visual', 'Destaque para produtos', 'Navegação mobile'],
     focus: 'Destacar a identidade gastronômica e deixar os produtos no centro da experiência.',
   },
+  {
+    id: 'mimo',
+    number: '03',
+    name: 'MIMO.',
+    category: 'Pet Care & Shop',
+    type: 'Projeto demonstrativo',
+    image: '/projects/mimo-preview.webp',
+    url: 'https://mimo-pet-demo.brunogoncalvesminitti.workers.dev/',
+    description:
+      'Um espaço digital para cuidar e comprar: serviços pet, escolha de horários e uma loja interativa em uma experiência acolhedora e moderna.',
+    highlights: ['Agendamento demonstrativo', 'Loja e carrinho interativos', 'Experiência responsiva'],
+    focus: 'Reunir cuidados e produtos para diferentes pets em uma jornada simples, clara e agradável.',
+  },
 ]
 
 const services = [
@@ -476,7 +489,7 @@ function App() {
                 <img src={projects[1].image} alt="Prévia do site BRASA." decoding="async" onError={(event) => { event.currentTarget.style.display = 'none' }} />
 
               </a>
-              <div className="showcase-stamp"><span>02</span> projetos<br />para explorar <span aria-hidden="true">↗</span></div>
+              <div className="showcase-stamp"><span>03</span> projetos<br />para explorar <span aria-hidden="true">↗</span></div>
             </div>
           </div>
           <div className="container hero-bottom"><span>FEITO COM INTENÇÃO, NÃO COM TEMPLATE.</span><a href="#projetos">DESLIZE PARA EXPLORAR ↓</a></div>
@@ -489,7 +502,7 @@ function App() {
               <p>Experiências desenvolvidas para explorar como uma presença digital pode refletir a identidade de um negócio.</p>
             </div>
             <div className="projects-stack">{projects.map((project) => <ProjectCard key={project.id} project={project} onPreview={openPreview} />)}</div>
-            <p className="projects-disclaimer">FORMA. e BRASA. são projetos conceituais de demonstração, não trabalhos contratados por estabelecimentos reais.</p>
+            <p className="projects-disclaimer">FORMA., BRASA. e MIMO. são projetos conceituais de demonstração, não trabalhos contratados por estabelecimentos reais.</p>
           </div>
         </section>
 

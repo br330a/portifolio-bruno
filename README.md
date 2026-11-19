@@ -1,6 +1,6 @@
 # Portfólio — Bruno Minitti
 
-Portfólio comercial de desenvolvimento web, com projetos demonstrativos **FORMA.** e **BRASA.**, contato pelo WhatsApp e prévias interativas.
+Portfólio comercial de desenvolvimento web, com projetos demonstrativos **FORMA.**, **BRASA.** e **MIMO.**, contato pelo WhatsApp e prévias interativas.
 
 ## Tecnologias
 
@@ -31,7 +31,7 @@ npm run preview
 - `src/App.jsx`: seções, informações sobre os projetos e destino do WhatsApp
 - `src/App.css`: visual, responsividade, animações e modo escuro
 - `src/index.css`: base CSS
-- `public/projects/*.webp`: capturas otimizadas do FORMA. e BRASA.
+- `public/projects/*.webp`: capturas otimizadas do FORMA., BRASA. e MIMO.
 - `public/about/bruno-profile.jpg`: retrato usado na seção Sobre
 - `public/social-preview.png`: capa de compartilhamento 1200×630
 - `public/favicon.svg`: identidade BM.
@@ -55,7 +55,7 @@ O portfólio diferencia **projetos demonstrativos** de trabalhos para clientes r
 
 ### Segurança e serviços externos
 
-O arquivo `_headers` é aplicado pelo Cloudflare **Pages** aos recursos estáticos. A política CSP permite fontes do Google e a incorporação dos dois endereços de demonstração. Atualize `frame-src` se os endereços dos projetos mudarem.
+O arquivo `_headers` é aplicado pelo Cloudflare **Pages** aos recursos estáticos. A política CSP permite fontes do Google e a incorporação dos três endereços de demonstração. Atualize `frame-src` se os endereços dos projetos mudarem.
 
 Alguns serviços podem bloquear `iframe` por políticas próprias (`frame-ancestors` ou `X-Frame-Options`). O botão **Abrir site completo** continua disponível independentemente da prévia incorporada.
 
