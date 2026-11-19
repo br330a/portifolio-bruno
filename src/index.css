@@ -1,18 +1,18 @@
-
 :root {
   font-family: 'Inter', sans-serif;
   color: #171b1a;
-  background: #fafaf8;
+  background: #f7f8f5;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 
-  --background: #fafaf8;
+  --background: #f7f8f5;
   --surface: #ffffff;
   --text: #171b1a;
   --muted: #737b76;
   --accent: #245a50;
-  --border: #e8ebe7;
+  --accent-soft: #edf4f1;
+  --border: #e2e7e2;
 }
 
 * {
@@ -27,6 +27,7 @@ html {
 body {
   margin: 0;
   min-width: 320px;
+  background: var(--background);
 }
 
 a {
@@ -39,6 +40,10 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
+img {
+  max-width: 100%;
+}
+
 a:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 4px;
@@ -47,7 +52,8 @@ a:focus-visible {
 h1,
 h2,
 h3,
-p {
+p,
+ul {
   margin-top: 0;
 }
 
