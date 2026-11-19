@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 
 // Altere somente este número caso use outro WhatsApp no futuro.
@@ -18,6 +18,7 @@ const projects = [
     description:
       'Uma proposta de presença digital com identidade marcante, pensada para apresentar uma barbearia com clareza e personalidade.',
     highlights: ['Identidade visual', 'Experiência responsiva', 'Apresentação de serviços'],
+    focus: 'Apresentar uma barbearia com personalidade e facilitar a descoberta dos serviços.',
   },
   {
     id: 'brasa',
@@ -30,6 +31,7 @@ const projects = [
     description:
       'Um conceito para o segmento gastronômico que une apresentação de produtos, comunicação visual e uma experiência digital envolvente.',
     highlights: ['Direção visual', 'Destaque para produtos', 'Navegação mobile'],
+    focus: 'Destacar a identidade gastronômica e deixar os produtos no centro da experiência.',
   },
 ]
 
@@ -77,7 +79,7 @@ function ThemeIcon({ theme }) {
   )
 }
 
-function ProjectCard({ project }) {
+function ProjectCard({ project, onPreview }) {
   function handlePointerMove(event) {
     if (event.pointerType === 'touch') return
     const box = event.currentTarget.getBoundingClientRect()
@@ -112,11 +114,177 @@ function ProjectCard({ project }) {
         <div className="case-highlights" aria-label="Características do projeto">
           {project.highlights.map((highlight) => <span key={highlight}>{highlight}</span>)}
         </div>
-        <a href={project.url} target="_blank" rel="noopener noreferrer" className="case-link">
-          Explorar projeto <span aria-hidden="true">↗</span>
-        </a>
+        <div className="case-focus">
+          <span className="case-focus-label">A IDEIA POR TRÁS DO PROJETO</span>
+          <p>{project.focus}</p>
+        </div>
+        <div className="case-actions">
+          <button
+            type="button"
+            className="case-preview-button"
+            onClick={() => onPreview(project)}
+            aria-label={`Visualizar ${project.name} em desktop e celular`}
+          >
+            Prévia interativa <span aria-hidden="true">↗</span>
+          </button>
+          <a href={project.url} target="_blank" rel="noopener noreferrer" className="case-link">
+            Abrir site <span aria-hidden="true">↗</span>
+          </a>
+        </div>
       </div>
     </article>
+  )
+}
+
+function LiveProjectFrame({ project, device }) {
+  const stageRef = useRef(null)
+  const [size, setSize] = useState({ width: 900, height: 570 })
+
+  useEffect(() => {
+    const stage = stageRef.current
+    if (!stage) return
+
+    const measure = () => {
+      const bounds = stage.getBoundingClientRect()
+      setSize({ width: bounds.width, height: bounds.height })
+    }
+
+    const initialFrame = window.requestAnimationFrame(measure)
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', measure)
+      return () => {
+        window.cancelAnimationFrame(initialFrame)
+        window.removeEventListener('resize', measure)
+      }
+    }
+
+    const observer = new ResizeObserver(measure)
+    observer.observe(stage)
+    return () => {
+      window.cancelAnimationFrame(initialFrame)
+      observer.disconnect()
+    }
+  }, [])
+
+  // Larguras reais de viewport: o browser interno adapta o layout do projeto.
+  const baseWidth = device === 'mobile' ? 390 : 1200
+  const baseHeight = device === 'mobile' ? 800 : 730
+  const scale = Math.min(
+    1,
+    Math.max(0.2, (size.width - 32) / baseWidth),
+    Math.max(0.2, (size.height - 28) / baseHeight),
+  )
+
+  return (
+    <div className="preview-stage" ref={stageRef}>
+      <div
+        className={`preview-device preview-device-${device}`}
+        style={{ width: baseWidth * scale, height: baseHeight * scale }}
+      >
+        <div
+          className="preview-device-canvas"
+          style={{ width: baseWidth, height: baseHeight, transform: `scale(${scale})` }}
+        >
+          <div className="preview-device-toolbar" aria-hidden="true">
+            <span className="preview-device-dots"><i /><i /><i /></span>
+            <span className="preview-device-address">{project.name} · demonstração</span>
+          </div>
+          <iframe
+            key={`${project.id}-${device}`}
+            className="preview-site-frame"
+            src={project.url}
+            title={`Prévia ao vivo do ${project.name} na versão ${device === 'mobile' ? 'celular' : 'desktop'}`}
+            loading="eager"
+            referrerPolicy="strict-origin-when-cross-origin"
+            style={{ height: baseHeight - 38 }}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ProjectPreviewDialog({ project, device, onDeviceChange, onClose }) {
+  const dialogRef = useRef(null)
+  const closeButtonRef = useRef(null)
+
+  useEffect(() => {
+    const previousFocus = document.activeElement
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    closeButtonRef.current?.focus()
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onClose()
+      }
+      if (event.key !== 'Tab') return
+
+      const focusables = dialogRef.current?.querySelectorAll(
+        'a[href], button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])',
+      )
+      if (!focusables?.length) return
+
+      const first = focusables[0]
+      const last = focusables[focusables.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = previousOverflow
+      previousFocus?.focus?.()
+    }
+  }, [onClose])
+
+  return (
+    <div
+      className="preview-backdrop"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose()
+      }}
+    >
+      <section
+        ref={dialogRef}
+        className="preview-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="preview-dialog-title"
+        aria-describedby="preview-dialog-description"
+      >
+        <div className="preview-dialog-header">
+          <div>
+            <span className="preview-dialog-kicker">DEMONSTRAÇÃO INTERATIVA</span>
+            <h3 id="preview-dialog-title">{project.name} <span>/ {project.category}</span></h3>
+          </div>
+          <button ref={closeButtonRef} type="button" className="preview-close" onClick={onClose} aria-label="Fechar prévia">×</button>
+        </div>
+        <div className="preview-dialog-controls">
+          <p id="preview-dialog-description">Explore o próprio site em diferentes tamanhos de tela.</p>
+          <div className="preview-device-selector" role="group" aria-label="Escolher visualização">
+            <button type="button" aria-pressed={device === 'desktop'} className={device === 'desktop' ? 'is-selected' : ''} onClick={() => onDeviceChange('desktop')}>
+              <span aria-hidden="true">▣</span> Desktop
+            </button>
+            <button type="button" aria-pressed={device === 'mobile'} className={device === 'mobile' ? 'is-selected' : ''} onClick={() => onDeviceChange('mobile')}>
+              <span aria-hidden="true">▯</span> Celular
+            </button>
+          </div>
+        </div>
+        <LiveProjectFrame project={project} device={device} />
+        <div className="preview-dialog-footer">
+          <span>Se o navegador bloquear a incorporação, abra a demonstração em outra aba.</span>
+          <a href={project.url} target="_blank" rel="noopener noreferrer">Abrir site completo ↗</a>
+        </div>
+      </section>
+    </div>
   )
 }
 
@@ -182,6 +350,13 @@ function App() {
   })
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
+  const [activeProject, setActiveProject] = useState(null)
+  const [previewDevice, setPreviewDevice] = useState('desktop')
+  const closePreview = useCallback(() => setActiveProject(null), [])
+  const openPreview = useCallback((project) => {
+    setPreviewDevice('desktop')
+    setActiveProject(project)
+  }, [])
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -287,12 +462,12 @@ function App() {
               <a className="showcase-window showcase-window-main" href={projects[0].url} target="_blank" rel="noopener noreferrer" aria-label="Visitar demonstração do FORMA.">
                 <span className="window-bar" aria-hidden="true"><i /><i /><i /><small>FORMA.</small></span>
                 <img src={projects[0].image} alt="Prévia do site FORMA." onError={(event) => { event.currentTarget.style.display = 'none' }} />
-                <span className="showcase-window-name">FORMA.</span>
+
               </a>
               <a className="showcase-window showcase-window-secondary" href={projects[1].url} target="_blank" rel="noopener noreferrer" aria-label="Visitar demonstração do BRASA.">
                 <span className="window-bar" aria-hidden="true"><i /><i /><i /><small>BRASA.</small></span>
                 <img src={projects[1].image} alt="Prévia do site BRASA." onError={(event) => { event.currentTarget.style.display = 'none' }} />
-                <span className="showcase-window-name">BRASA.</span>
+
               </a>
               <div className="showcase-stamp"><span>02</span> projetos<br />para explorar <span aria-hidden="true">↗</span></div>
             </div>
@@ -306,7 +481,7 @@ function App() {
               <div><p className="eyebrow">01 / TRABALHOS SELECIONADOS</p><h2>Projetos que <em>falam por si.</em></h2></div>
               <p>Experiências desenvolvidas para explorar como uma presença digital pode refletir a identidade de um negócio.</p>
             </div>
-            <div className="projects-stack">{projects.map((project) => <ProjectCard key={project.id} project={project} />)}</div>
+            <div className="projects-stack">{projects.map((project) => <ProjectCard key={project.id} project={project} onPreview={openPreview} />)}</div>
             <p className="projects-disclaimer">FORMA. e BRASA. são projetos conceituais de demonstração, não trabalhos contratados por estabelecimentos reais.</p>
           </div>
         </section>
@@ -347,11 +522,19 @@ function App() {
       </main>
 
       <a className="whatsapp-float" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" aria-label="Conversar com Bruno pelo WhatsApp" title="Conversar pelo WhatsApp">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M20 11.4a8.3 8.3 0 0 1-8.5 8.4 9 9 0 0 1-3.4-.7L4 20l1.1-4a8.7 8.7 0 0 1-1.1-4.2 8.1 8.1 0 0 1 8.2-8.1A7.9 7.9 0 0 1 20 11.4Z" />
-          <path d="M9.1 9.2c.3 2.4 2 4.3 4.5 5.1l1.2-1.1 1.7 1" />
+        <svg viewBox="0 0 24 24" width="23" height="23" fill="currentColor" aria-hidden="true" focusable="false">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.966-.273-.099-.472-.148-.67.15-.198.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.058-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.496.099-.198.05-.372-.025-.52-.074-.149-.669-1.612-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.372-.01-.57-.01-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.875 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.695.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.29.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.85 9.85 0 0 1-5.031-1.378l-.361-.214-3.741.98.998-3.648-.235-.374a9.855 9.855 0 0 1-1.51-5.256c.002-5.446 4.435-9.878 9.884-9.878a9.81 9.81 0 0 1 6.985 2.9 9.825 9.825 0 0 1 2.893 6.99c-.003 5.447-4.436 9.88-9.878 9.88m8.406-18.29A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.334.157 11.893a11.86 11.86 0 0 0 1.587 5.936L.057 24l6.3-1.654a11.85 11.85 0 0 0 5.687 1.448h.005c6.557 0 11.893-5.334 11.896-11.893a11.81 11.81 0 0 0-3.49-8.406Z" />
         </svg>
       </a>
+      {activeProject && (
+        <ProjectPreviewDialog
+          project={activeProject}
+          device={previewDevice}
+          onDeviceChange={setPreviewDevice}
+          onClose={closePreview}
+        />
+      )}
+
       <footer className="site-footer"><div className="container footer-inner"><a className="brand" href="#inicio">Bruno Minitti<span>.</span></a><span>Desenvolvimento Web · Jundiaí, SP</span><a href="#inicio" className="back-to-top">Voltar ao topo ↑</a><span>© {new Date().getFullYear()}</span></div></footer>
     </>
   )
